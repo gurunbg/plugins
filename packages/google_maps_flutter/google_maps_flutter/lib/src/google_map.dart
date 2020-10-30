@@ -54,6 +54,8 @@ class GoogleMap extends StatefulWidget {
     this.onCameraIdle,
     this.onTap,
     this.onLongPress,
+    this.tileProviderUrl,
+    this.tileSize,
   })  : assert(initialCameraPosition != null),
         super(key: key);
 
@@ -193,6 +195,12 @@ class GoogleMap extends StatefulWidget {
 
   /// Enables or disables showing 3D buildings where available
   final bool buildingsEnabled;
+
+  /// Url for simple tile provider
+  final String tileProviderUrl;
+
+  /// height and width of custom tile
+  final int tileSize;
 
   /// Which gestures should be consumed by the map.
   ///
@@ -402,6 +410,8 @@ class _GoogleMapOptions {
     this.indoorViewEnabled,
     this.trafficEnabled,
     this.buildingsEnabled,
+    this.tileUrlProvider,
+    this.tileSize,
   }) {
     assert(liteModeEnabled == null ||
         !liteModeEnabled ||
@@ -428,6 +438,8 @@ class _GoogleMapOptions {
       indoorViewEnabled: map.indoorViewEnabled,
       trafficEnabled: map.trafficEnabled,
       buildingsEnabled: map.buildingsEnabled,
+      tileUrlProvider: map.tileProviderUrl,
+      tileSize: map.tileSize,
     );
   }
 
@@ -467,6 +479,10 @@ class _GoogleMapOptions {
 
   final bool buildingsEnabled;
 
+  final String tileUrlProvider;
+
+  final int tileSize;
+
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> optionsMap = <String, dynamic>{};
 
@@ -499,6 +515,8 @@ class _GoogleMapOptions {
     addIfNonNull('indoorEnabled', indoorViewEnabled);
     addIfNonNull('trafficEnabled', trafficEnabled);
     addIfNonNull('buildingsEnabled', buildingsEnabled);
+    addIfNonNull('tileProviderUrl', tileUrlProvider);
+    addIfNonNull('tileSize', tileSize);
     return optionsMap;
   }
 

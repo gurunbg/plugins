@@ -32,6 +32,10 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -76,6 +80,8 @@ final class GoogleMapController
   private final PolygonsController polygonsController;
   private final PolylinesController polylinesController;
   private final CirclesController circlesController;
+  private String titleProviderUrl;
+  private int tileSize = 256;
   private List<Object> initialMarkers;
   private List<Object> initialPolygons;
   private List<Object> initialPolylines;
@@ -144,6 +150,7 @@ final class GoogleMapController
     updateInitialPolygons();
     updateInitialPolylines();
     updateInitialCircles();
+    updateTileProvider();
   }
 
   @Override
@@ -726,6 +733,27 @@ final class GoogleMapController
 
   private void updateInitialCircles() {
     circlesController.addCircles(initialCircles);
+  }
+
+  @Override
+  public void setTileProviderUrl(String titleProviderUrl) {
+    this.titleProviderUrl = titleProviderUrl;
+
+    if(googleMap != null) {
+      updateTileProvider();
+    }
+  }
+
+  private void updateTileProvider() {
+    TileProvider tileProvider = new SimpleTileProvider(titleProviderUrl, tileSize, tileSize);
+    TileOverlayOptions options = new TileOverlayOptions().tileProvider(tileProvider);
+    options.zIndex(0);
+    googleMap.addTileOverlay(options);
+  }
+
+  @Override
+  public void setTileSize(int tileSize) {
+    this.tileSize = tileSize;
   }
 
   @SuppressLint("MissingPermission")

@@ -94,6 +94,19 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     _circlesController = [[FLTCirclesController alloc] init:_channel
                                                     mapView:_mapView
                                                   registrar:registrar];
+
+    NSString *tileProviderUrl = args[@"options"][@"tileProviderUrl"];
+    if (tileProviderUrl != nil) {
+        GMSTileURLConstructor urls = ^(NSUInteger x, NSUInteger y, NSUInteger zoom) {
+            NSString *url = [NSString
+                    stringWithFormat:tileProviderUrl, (unsigned long) zoom, (unsigned long) x, (unsigned long) y];
+            return [NSURL URLWithString:url];
+        };
+        GMSURLTileLayer *layer = [GMSURLTileLayer tileLayerWithURLConstructor:urls];
+        layer.map = _mapView;
+        layer.zIndex = 100;
+    }
+
     id markersToAdd = args[@"markersToAdd"];
     if ([markersToAdd isKindOfClass:[NSArray class]]) {
       [_markersController addMarkers:markersToAdd];

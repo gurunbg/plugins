@@ -19,6 +19,8 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
   private boolean indoorEnabled = true;
   private boolean trafficEnabled = false;
   private boolean buildingsEnabled = true;
+  private String titleProviderUrl;
+  private int tileSize;
   private Object initialMarkers;
   private Object initialPolygons;
   private Object initialPolylines;
@@ -44,6 +46,8 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
     controller.setInitialPolylines(initialPolylines);
     controller.setInitialCircles(initialCircles);
     controller.setPadding(padding.top, padding.left, padding.bottom, padding.right);
+    controller.setTileSize(tileSize);
+    controller.setTileProviderUrl(titleProviderUrl);
     return controller;
   }
 
@@ -164,5 +168,15 @@ class GoogleMapBuilder implements GoogleMapOptionsSink {
   @Override
   public void setInitialCircles(Object initialCircles) {
     this.initialCircles = initialCircles;
+  }
+
+  @Override
+  public void setTileProviderUrl(String titleProviderUrl) {
+    this.titleProviderUrl = titleProviderUrl;
+  }
+
+  @Override
+  public void setTileSize(int tileSize) {
+    this.tileSize = tileSize;
   }
 }

@@ -344,6 +344,14 @@ class Convert {
     if (buildingsEnabled != null) {
       sink.setBuildingsEnabled(toBoolean(buildingsEnabled));
     }
+    final Object tileSize = data.get("tileSize");
+    if (tileSize != null) {
+      sink.setTileSize(toInt(tileSize));
+    }
+    final Object tileUrlProvider = data.get("tileProviderUrl");
+    if (tileUrlProvider != null) {
+      sink.setTileProviderUrl(toString(tileUrlProvider));
+    }
   }
 
   /** Returns the dartMarkerId of the interpreted marker. */
