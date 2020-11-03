@@ -104,7 +104,9 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
         };
         GMSURLTileLayer *layer = [GMSURLTileLayer tileLayerWithURLConstructor:urls];
         layer.map = _mapView;
-        layer.zIndex = 100;
+        layer.zIndex = 2;
+
+        layer.tileSize = 512;
     }
 
     id markersToAdd = args[@"markersToAdd"];
