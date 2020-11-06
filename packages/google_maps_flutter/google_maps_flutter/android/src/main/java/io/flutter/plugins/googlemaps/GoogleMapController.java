@@ -536,6 +536,11 @@ final class GoogleMapController
       return;
     }
     mapView.onResume();
+
+    // Workaround for https://github.com/flutter/flutter/issues/40284
+    if (googleMap != null) {
+      googleMap.setMapType(googleMap.getMapType());
+    }
   }
 
   @Override
@@ -543,7 +548,7 @@ final class GoogleMapController
     if (disposed) {
       return;
     }
-    mapView.onResume();
+    mapView.onPause();
   }
 
   @Override
