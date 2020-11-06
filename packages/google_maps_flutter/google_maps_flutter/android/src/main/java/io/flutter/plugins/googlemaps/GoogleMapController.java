@@ -538,9 +538,9 @@ final class GoogleMapController
     mapView.onResume();
 
     // Workaround for https://github.com/flutter/flutter/issues/40284
-    //if (googleMap != null) {
-    //  googleMap.setMapType(googleMap.getMapType());
-    //}
+    if (googleMap != null) {
+      googleMap.setMapType(googleMap.getMapType());
+    }
   }
 
   @Override
