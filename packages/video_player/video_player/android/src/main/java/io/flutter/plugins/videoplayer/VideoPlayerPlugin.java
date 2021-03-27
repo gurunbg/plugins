@@ -1,4 +1,4 @@
-// Copyright 2017 The Chromium Authors. All rights reserved.
+// Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -6,9 +6,9 @@ package io.flutter.plugins.videoplayer;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.util.LongSparseArray;
 import io.flutter.FlutterInjector;
+import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
@@ -23,6 +23,7 @@ import io.flutter.plugins.videoplayer.Messages.VolumeMessage;
 import io.flutter.view.TextureRegistry;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 /** Android platform implementation of the VideoPlayerPlugin. */
@@ -92,6 +93,7 @@ public class VideoPlayerPlugin implements FlutterPlugin, VideoPlayerApi {
     }
     flutterState.stopListening(binding.getBinaryMessenger());
     flutterState = null;
+    initialize();
   }
 
   private void disposeAllPlayers() {
@@ -137,8 +139,11 @@ public class VideoPlayerPlugin implements FlutterPlugin, VideoPlayerApi {
               handle,
               "asset:///" + assetLookupKey,
               null,
+              null,
               options);
     } else {
+      @SuppressWarnings("unchecked")
+      Map<String, String> httpHeaders = arg.getHttpHeaders();
       player =
           new VideoPlayer(
               flutterState.applicationContext,
@@ -146,6 +151,7 @@ public class VideoPlayerPlugin implements FlutterPlugin, VideoPlayerApi {
               handle,
               arg.getUri(),
               arg.getFormatHint(),
+              httpHeaders,
               options);
     }
     videoPlayers.put(handle.id(), player);
