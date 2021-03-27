@@ -79,7 +79,7 @@ final class VideoPlayer {
     if (isHTTP(uri)) {
       DefaultHttpDataSourceFactory httpDataSourceFactory =
           new DefaultHttpDataSourceFactory(
-              "ExoPlayer",
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0",
               null,
               DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
               DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
