@@ -1,3 +1,11 @@
+## 2.1.2
+
+* Migrate maven repository from jcenter to mavenCentral.
+
+## 2.1.1
+
+* Update example code in README to reflect API changes.
+
 ## 2.1.0
 
 * Add `httpHeaders` option to `VideoPlayerController.network`

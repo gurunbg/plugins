@@ -52,18 +52,22 @@ const Set<String> _ignoredFullBasenameList = <String>{
 final List<RegExp> _thirdPartyLicenseBlockRegexes = <RegExp>[
 // Third-party code used in url_launcher_web.
   RegExp(
-      r'^// Copyright 2017 Workiva Inc..*'
-      '^// Licensed under the Apache License, Version 2.0',
+      r'^// Copyright 2017 Workiva Inc\..*'
+      r'^// Licensed under the Apache License, Version 2\.0',
       multiLine: true,
       dotAll: true),
+  // bsdiff in flutter/packages.
+  RegExp(r'// Copyright 2003-2005 Colin Percival\. All rights reserved\.\n'
+      r'// Use of this source code is governed by a BSD-style license that can be\n'
+      r'// found in the LICENSE file\.\n'),
 ];
 
 // The exact format of the BSD license that our license files should contain.
 // Slight variants are not accepted because they may prevent consolidation in
 // tools that assemble all licenses used in distributed applications.
 // standardized.
-final String _fullBsdLicenseText =
-    '''Copyright 2013 The Flutter Authors. All rights reserved.
+const String _fullBsdLicenseText = '''
+Copyright 2013 The Flutter Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -110,7 +114,7 @@ class LicenseCheckCommand extends PluginCommand {
       'Ensures that all code files have copyright/license blocks.';
 
   @override
-  Future<Null> run() async {
+  Future<void> run() async {
     final Iterable<File> codeFiles = (await _getAllFiles()).where((File file) =>
         _codeFileExtensions.contains(p.extension(file.path)) &&
         !_shouldIgnoreFile(file));
@@ -158,16 +162,19 @@ class LicenseCheckCommand extends PluginCommand {
       _print('Checking ${file.path}');
       final String content = await file.readAsString();
 
+      final String firstParyLicense =
+          firstPartyLicenseBlockByExtension[p.extension(file.path)] ??
+              defaultFirstParyLicenseBlock;
       if (_isThirdParty(file)) {
+        // Third-party directories allow either known third-party licenses, our
+        // the first-party license, as there may be local additions.
         if (!_thirdPartyLicenseBlockRegexes
-            .any((regex) => regex.hasMatch(content))) {
+                .any((RegExp regex) => regex.hasMatch(content)) &&
+            !content.contains(firstParyLicense)) {
           unrecognizedThirdPartyFiles.add(file);
         }
       } else {
-        final String license =
-            firstPartyLicenseBlockByExtension[p.extension(file.path)] ??
-                defaultFirstParyLicenseBlock;
-        if (!content.contains(license)) {
+        if (!content.contains(firstParyLicense)) {
           incorrectFirstPartyFiles.add(file);
         }
       }
@@ -175,7 +182,8 @@ class LicenseCheckCommand extends PluginCommand {
     _print('\n');
 
     // Sort by path for more usable output.
-    final pathCompare = (File a, File b) => a.path.compareTo(b.path);
+    final int Function(File, File) pathCompare =
+        (File a, File b) => a.path.compareTo(b.path);
     incorrectFirstPartyFiles.sort(pathCompare);
     unrecognizedThirdPartyFiles.sort(pathCompare);
 
@@ -200,7 +208,7 @@ class LicenseCheckCommand extends PluginCommand {
           'the new third-party license block.\n');
     }
 
-    bool succeeded =
+    final bool succeeded =
         incorrectFirstPartyFiles.isEmpty && unrecognizedThirdPartyFiles.isEmpty;
     if (succeeded) {
       _print('All source files passed validation!');
@@ -230,7 +238,7 @@ class LicenseCheckCommand extends PluginCommand {
           'Please ensure that they use the exact format used in this repository".\n');
     }
 
-    bool succeeded = incorrectLicenseFiles.isEmpty;
+    final bool succeeded = incorrectLicenseFiles.isEmpty;
     if (succeeded) {
       _print('All LICENSE files passed validation!');
     }

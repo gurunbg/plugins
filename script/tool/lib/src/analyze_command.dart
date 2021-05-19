@@ -9,7 +9,9 @@ import 'package:path/path.dart' as p;
 
 import 'common.dart';
 
+/// A command to run Dart analysis on packages.
 class AnalyzeCommand extends PluginCommand {
+  /// Creates a analysis command instance.
   AnalyzeCommand(
     Directory packagesDir,
     FileSystem fileSystem, {
@@ -27,13 +29,11 @@ class AnalyzeCommand extends PluginCommand {
   final String name = 'analyze';
 
   @override
-  final String description = 'Analyzes all packages using package:tuneup.\n\n'
-      'This command requires "pub" and "flutter" to be in your path.';
+  final String description = 'Analyzes all packages using dart analyze.\n\n'
+      'This command requires "dart" and "flutter" to be in your path.';
 
   @override
-  Future<Null> run() async {
-    checkSharding();
-
+  Future<void> run() async {
     print('Verifying analysis settings...');
     final List<FileSystemEntity> files = packagesDir.listSync(recursive: true);
     for (final FileSystemEntity file in files) {
@@ -42,7 +42,7 @@ class AnalyzeCommand extends PluginCommand {
         continue;
       }
 
-      final bool allowed = argResults[_customAnalysisFlag].any(
+      final bool allowed = (getStringListArg(_customAnalysisFlag)).any(
           (String directory) =>
               directory != null &&
               directory.isNotEmpty &&
@@ -57,12 +57,7 @@ class AnalyzeCommand extends PluginCommand {
       throw ToolExit(1);
     }
 
-    print('Activating tuneup package...');
-    await processRunner.runAndStream(
-        'pub', <String>['global', 'activate', 'tuneup'],
-        workingDir: packagesDir, exitOnError: true);
-
-    await for (Directory package in getPackages()) {
+    await for (final Directory package in getPackages()) {
       if (isFlutterPackage(package, fileSystem)) {
         await processRunner.runAndStream('flutter', <String>['packages', 'get'],
             workingDir: package, exitOnError: true);
@@ -73,9 +68,9 @@ class AnalyzeCommand extends PluginCommand {
     }
 
     final List<String> failingPackages = <String>[];
-    await for (Directory package in getPlugins()) {
+    await for (final Directory package in getPlugins()) {
       final int exitCode = await processRunner.runAndStream(
-          'pub', <String>['global', 'run', 'tuneup', 'check'],
+          'dart', <String>['analyze', '--fatal-infos'],
           workingDir: package);
       if (exitCode != 0) {
         failingPackages.add(p.basename(package.path));
@@ -85,9 +80,9 @@ class AnalyzeCommand extends PluginCommand {
     print('\n\n');
     if (failingPackages.isNotEmpty) {
       print('The following packages have analyzer errors (see above):');
-      failingPackages.forEach((String package) {
+      for (final String package in failingPackages) {
         print(' * $package');
-      });
+      }
       throw ToolExit(1);
     }
 
