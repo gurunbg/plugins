@@ -230,8 +230,8 @@ final class VideoPlayer {
 
   @SuppressWarnings("deprecation")
   private static void setAudioAttributes(SimpleExoPlayer exoPlayer, boolean isMixMode) {
-    exoPlayer.setAudioAttributes(
-        new AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MOVIE).build(), !isMixMode);
+//    exoPlayer.setAudioAttributes(
+//        new AudioAttributes.Builder().setContentType(C.CONTENT_TYPE_MOVIE).build(), !isMixMode);
   }
 
   void play() {
@@ -243,24 +243,24 @@ final class VideoPlayer {
   }
 
   void setLooping(boolean value) {
-    exoPlayer.setRepeatMode(value ? REPEAT_MODE_ALL : REPEAT_MODE_OFF);
+    //exoPlayer.setRepeatMode(value ? REPEAT_MODE_ALL : REPEAT_MODE_OFF);
   }
 
   void setVolume(double value) {
-    float bracketedValue = (float) Math.max(0.0, Math.min(1.0, value));
-    exoPlayer.setVolume(bracketedValue);
+//    float bracketedValue = (float) Math.max(0.0, Math.min(1.0, value));
+//    exoPlayer.setVolume(bracketedValue);
   }
 
   void setPlaybackSpeed(double value) {
     // We do not need to consider pitch and skipSilence for now as we do not handle them and
     // therefore never diverge from the default values.
-    final PlaybackParameters playbackParameters = new PlaybackParameters(((float) value));
-
-    exoPlayer.setPlaybackParameters(playbackParameters);
+//    final PlaybackParameters playbackParameters = new PlaybackParameters(((float) value));
+//
+//    exoPlayer.setPlaybackParameters(playbackParameters);
   }
 
   void seekTo(int location) {
-    exoPlayer.seekTo(location);
+    //exoPlayer.seekTo(location);
   }
 
   long getPosition() {
