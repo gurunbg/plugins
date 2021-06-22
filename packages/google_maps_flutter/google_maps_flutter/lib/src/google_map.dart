@@ -77,7 +77,7 @@ class GoogleMap extends StatefulWidget {
     this.onCameraIdle,
     this.onTap,
     this.onLongPress,
-    this.tileProviderUrl,
+    this.tileUrlProvider,
     this.tileSize,
   })  : assert(initialCameraPosition != null),
         super(key: key);
@@ -223,10 +223,10 @@ class GoogleMap extends StatefulWidget {
   final bool buildingsEnabled;
 
   /// Url for simple tile provider
-  final String tileProviderUrl;
+  final String? tileUrlProvider;
 
   /// height and width of custom tile
-  final int tileSize;
+  final int? tileSize;
 
   /// Which gestures should be consumed by the map.
   ///
@@ -514,9 +514,9 @@ class _GoogleMapOptions {
 
   final bool buildingsEnabled;
 
-  final String tileUrlProvider;
+  final String? tileUrlProvider;
 
-  final int tileSize;
+  final int? tileSize;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
