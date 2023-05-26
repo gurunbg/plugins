@@ -88,7 +88,7 @@ void main() {
           webOnlyWindowName: null,
         )
         ..setResponse(true);
-      expect(await launchUrl(url, mode: LaunchMode.platformDefault), isTrue);
+      expect(await launchUrl(url), isTrue);
     });
 
     test('explicit default launch mode with non-web URL', () async {
@@ -104,7 +104,7 @@ void main() {
           webOnlyWindowName: null,
         )
         ..setResponse(true);
-      expect(await launchUrl(url, mode: LaunchMode.platformDefault), isTrue);
+      expect(await launchUrl(url), isTrue);
     });
 
     test('in-app webview', () async {
@@ -223,7 +223,7 @@ void main() {
 
     test('cannot launch a non-web URL in a webview', () async {
       expect(
-          () async => await launchUrl(Uri(scheme: 'tel', path: '555-555-5555'),
+          () async => launchUrl(Uri(scheme: 'tel', path: '555-555-5555'),
               mode: LaunchMode.inAppWebView),
           throwsA(isA<ArgumentError>()));
     });
