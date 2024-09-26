@@ -32,6 +32,9 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy;
+import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.view.TextureRegistry;
 import java.util.Arrays;
@@ -72,7 +75,18 @@ final class VideoPlayer {
     this.textureEntry = textureEntry;
     this.options = options;
 
-    ExoPlayer exoPlayer = new ExoPlayer.Builder(context).build();
+    LoadErrorHandlingPolicy loadErrorHandlingPolicy =
+            new DefaultLoadErrorHandlingPolicy() {
+              @Override
+              public long getRetryDelayMsFor(LoadErrorInfo loadErrorInfo) {
+                // Implement custom back-off logic here.
+                return Long.min(super.getRetryDelayMsFor(loadErrorInfo), 2000);
+              }
+            };
+
+    ExoPlayer exoPlayer = new ExoPlayer.Builder(context).setMediaSourceFactory(
+            new DefaultMediaSourceFactory(context)
+                    .setLoadErrorHandlingPolicy(loadErrorHandlingPolicy)).build();
 
     Uri uri = Uri.parse(dataSource);
     DataSource.Factory dataSourceFactory;
